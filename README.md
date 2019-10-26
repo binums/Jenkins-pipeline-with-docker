@@ -150,4 +150,4 @@ In your ubuntu machine change the name of the jenkins project name in the playbo
 
 - Go to your project directory &rarr; make a change &rarr; commit &rarr; push to git
   
-**The pipeline will be triggered by default by the `gitlab webhook` &rarr; the code will undergo static analysis by sonarqube of which the result will be available in `sonarqube dashboard` &rarr; will be built by `npm` and compressed &rarr; stored in `nexus` &rarr; then deployed in the `three ansible hosts` at `ports 4002, 4004 and 4006 of localhost**  
+**The pipeline will be triggered by default by the `gitlab webhook` &rarr; the code will undergo static analysis by sonarqube of which the result will be available in `sonarqube dashboard` &rarr; will be built by `npm` and compressed &rarr; stored in `nexus` &rarr; then deployed in the `three ansible hosts` and served at `ports 4002, 4004 and 4006 of localhost**  
