@@ -129,6 +129,23 @@ Our setup involves three ansible host containers, , single containers runing son
       - File path or comma separated host list : `/inventory.txt`
 - **Save**
 - Jenkins project  &rarr; Build Now _(To test)_
+
+***
+In your ubuntu machine change the name of the jenkins project name in the playbook inside the ansible container
+
+```
+    $ docker container exec -it pipelineonubuntu_jekns-ans-master_1 bash
+    # nano /pb1.yml
+
+        ...
+        tasks:
+          - name: copy zip file
+            copy:
+              src: /var/jenkins_home/workspace/ <JENKINS PROJECT NAME> /build.zip
+        ...
+    # exit
+```
+
 ***
 
 - Go to your project directory &rarr; make a change &rarr; commit &rarr; push to git
