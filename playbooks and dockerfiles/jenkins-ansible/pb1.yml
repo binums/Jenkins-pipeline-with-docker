@@ -1,0 +1,15 @@
+- name: play 1
+  hosts: all
+  tasks:
+    - name: copy zip file
+      copy:
+        src: /var/jenkins_home/workspace/pro-test2/build.zip
+        dest: /home/remote-user/deploy/build.zip
+    - name: unzip the build file
+      command: chdir=/home/remote-user/deploy/ unzip -o build.zip
+    - name: replace with new build
+      command: rsync -av --delete /home/remote-user/deploy/build /home/remote-user/deploy/final/
+    - name: serveing new build
+      shell: serve -s /home/remote-user/deploy/final/build -l 4000 &
+    - name: remove extras
+      command: rm -rf /home/remote-user/deploy/build/ /home/remote-user/deploy/build.zip

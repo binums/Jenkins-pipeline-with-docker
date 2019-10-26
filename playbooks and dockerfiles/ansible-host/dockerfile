@@ -1,0 +1,18 @@
+FROM centos:7
+RUN yum install -y openssh-server curl unzip rsync psmisc sshpass
+RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+RUN yum install nodejs -y
+RUN npm i -g serve
+RUN echo '2244' | passwd root --stdin
+RUN useradd remote-user && \
+    echo '1234' |passwd remote-user --stdin && \
+    mkdir /home/remote-user/.ssh && chmod 777 /home/remote-user/.ssh 
+USER remote-user
+RUN mkdir -p /home/remote-user/deploy/final/build /home/remote-user/deploy/build && \
+    chmod 777 -R /home/remote-user/deploy
+USER root
+COPY new-key.pub /home/remote-user/.ssh/authorized_keys
+RUN chown remote-user:remote-user -R /home/remote-user/.ssh/ && \
+    chmod 600 /home/remote-user/.ssh/authorized_keys
+RUN /usr/sbin/sshd-keygen
+CMD /usr/sbin/sshd -D

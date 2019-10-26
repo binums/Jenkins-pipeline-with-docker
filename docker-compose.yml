@@ -1,0 +1,51 @@
+version: "3"
+services:
+  jekns-ans-master:
+    image: binums/custom-jenkins-ansible
+    networks:
+      pro-net:
+        ipv4_address: 172.24.0.2
+    ports:
+      - "8080:8080"
+  sonarqube:
+    image: sonarqube
+    networks:
+      pro-net:
+        ipv4_address: 172.24.0.4
+    ports:
+      - 9000:9000
+  nexus:
+    image: sonatype/nexus3
+    networks:
+      pro-net:
+        ipv4_address: 172.24.0.12
+    ports:
+      - 8081:8081
+  ansible-host1:
+    image: binums/ansible-host
+    networks:
+      pro-net:
+        ipv4_address: 172.24.0.6
+    ports:
+      - 4002:4000
+  ansible-host2:
+    image: binums/ansible-host
+    networks:
+      pro-net:
+        ipv4_address: 172.24.0.8
+    ports:
+      - 4004:4000
+  ansible-host3:
+    image: binums/ansible-host
+    networks:
+      pro-net:
+        ipv4_address: 172.24.0.10
+    ports:
+      - 4006:4000
+
+networks:
+  pro-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.0.0/16
