@@ -23,7 +23,7 @@ Our setup involves three ansible host containers, individual containers running 
 
 ## This is how you implement:
 
-- Clone the repo, navigate to the directory `pipeline on ubuntu`, and run the setup.sh script file. Your setup is done, You are just configuring your project away from an up and running pipeline. 
+- Clone the repo, navigate to the directory `pipeline-on-ubuntu`, and run the setup.sh script file. Your setup is done, You are just configuring your project away from an up and running pipeline. 
 
 
 ``` 
@@ -34,19 +34,21 @@ Our setup involves three ansible host containers, individual containers running 
     $ ./setup.sh
 ```
 
-- Your jenkins and nexus initial passwords will be fetched for you at the end of the execution of the script.
-
+- Your jenkins and nexus initial passwords will be fetched for you at the end of the execution of the script. Incase the nexus password is not fetched, wait for a moment and run 
+```
+  $ docker container exec pipelineonubuntu_nexus_1 cat /nexus-data/admin.password
+```
 *** 
 - Navigate to `localhost:9000` &rarr; login
     _User: `admin`
     Password: `admin`_
 
-    - Under my account &rarr; generate a security token &rarr; copy to clipboard
+    - Under my account &rarr; security &rarr; generate a security token &rarr; copy to clipboard
 - Navigate to `localhost:8081` &rarr; login _(User: `admin`, password will be fetched by the script)_
-    - Under server administration and configuration create a a new repository with type: `raw (hosted`)
+    - Under server administration and configuration create a a new repository with recipe: `raw (hosted`)
 
 
-- Navigate to `localhost:8080` &rarr; login _(initial admin password will be fetched by the script)_ and setup **Jenkins**. Install additional plegins
+- Navigate to `localhost:8080` &rarr; login _(initial admin password will be fetched by the script)_ and setup **Jenkins**. Install additional plugins
     - Sonarqube scanner
     - Ansible
     - Gitlab, gitlab hook (Incase you are using gitlab, like we are)
@@ -54,12 +56,15 @@ Our setup involves three ansible host containers, individual containers running 
 
 - In your `gitlab.com` account &rarr; Settings &rarr; SSH Keys &rarr; add the public key of a key pair
 *** 
-- Manage jenkins &rarr; Configure system &rarr; SonarQube servers
-  - [x] `Enable injection of SonarQube server configuration as build environment variables`
-  - Add SonarQube &rarr; 
-    - Give a name
-    - Server URL: `http://172.24.0.4:9000`
-    - Sonarqube authentication token &rarr; Add &rarr; kind: `secret text` &rarr; copy the generated SonarQube token &rarr; andd the cred and use it &rarr; **save**
+- Manage jenkins &rarr; Configure system
+  -  SonarQube servers
+     - [x] `Enable injection of SonarQube server configuration as build environment variables`
+     - Add SonarQube &rarr; 
+       - Give a name
+       - Server URL: `http://172.24.0.4:9000`
+       - Sonarqube authentication token &rarr; Add &rarr; kind: `secret text` &rarr; copy the generated SonarQube token &rarr; add the cred and use it
+  - Gitlab
+    - [ ] Enable authentication for '/project' end-point _(uncheck if checked by deafult)_
 
 - Manage jenkins &rarr; Global tool configuration &rarr; SonarQube scanner
   - Add sonarqube scanner &rarr; Give a name &rarr; **save**
@@ -68,9 +73,9 @@ Our setup involves three ansible host containers, individual containers running 
   - Source Code Management 
     - [x] Git
     - Repository URL:  `ssh clone url`
-    - Credentials &rarr; Add &rarr; kind; `SSH Username with private key` 
+    - Credentials &rarr; Add &rarr; kind: `SSH Username with private key` 
       - Username: `gitlab username`
-      - Private key &rarr; Enter directly &rarr; Add &rarr; _private key_ of the key pair of which _public key_ is configured in gitlab
+      - Private key &rarr; Enter directly &rarr; Add &rarr; _private key_ of the key pair of which _public key_ is configured in gitlab &rarr; Add cred and use it &rarr; **Save**
     *** 
   - Build triggers
     - [x] `Build when a change is pushed to GitLab. GitLab webhook URL:` http://localhost:8080/project/_jenkins-project-name_ &rarr; Enabled GitLab triggers
@@ -91,7 +96,7 @@ Our setup involves three ansible host containers, individual containers running 
        ```
     *** 
   - Build &rarr; Add build step
-    - `Execute SonarQube Scanner &rarr; Analysis properties
+    - Execute SonarQube Scanner &rarr; Analysis properties
         ```
         sonar.projectKey =  < Sonarqube project key >
         sonar.projectName =  < Sonarqube project name >
@@ -112,7 +117,7 @@ Our setup involves three ansible host containers, individual containers running 
     - Nexus Version: `NEXUS3`
     - Protocol: `HTTP`
     - Nexus URL: `172.24.0.12:8081`
-    - Credentials: Add &rarr; kind &rarr; Username and Password &rarr; `Nexus username and password`
+    - Credentials: Add &rarr; kind &rarr; Username and Password &rarr; `Nexus username and password` &rarr; Add and use it
     - GroupId: `< nexus group id >`
     - Version: `< version of code >`
     - Repository: `< name of the repository that was created in nexus >`
@@ -128,7 +133,6 @@ Our setup involves three ansible host containers, individual containers running 
     - Inventory &rarr; File or host list
       - File path or comma separated host list : `/inventory.txt`
 - **Save**
-- Jenkins project  &rarr; Build Now _(To test)_
 
 ***
 In your ubuntu machine change the name of the jenkins project name in the playbook inside the ansible container
@@ -145,9 +149,10 @@ In your ubuntu machine change the name of the jenkins project name in the playbo
         ...
     # exit
 ```
+- Jenkins dashboard &rarr; project  &rarr; Build Now _(To test)_
 
 ***
 
 - Go to your project directory &rarr; make a change &rarr; commit &rarr; push to git
   
-**The pipeline will be triggered by default by the `gitlab webhook` &rarr; the code will undergo static analysis by sonarqube of which the result will be available in `sonarqube dashboard` &rarr; will be built by `npm` and compressed &rarr; stored in `nexus` &rarr; then deployed in the `three ansible hosts` and served at `ports 4002, 4004 and 4006 of localhost**  
+**The pipeline will be triggered by default by the `gitlab webhook` &rarr; the code will undergo static analysis by sonarqube of which the result will be available in `sonarqube dashboard` &rarr; will be built by `npm` and compressed &rarr; stored in `nexus` &rarr; then deployed in the `three ansible hosts` and served at `ports 4002, 4004 and 4006` of localhost**  
