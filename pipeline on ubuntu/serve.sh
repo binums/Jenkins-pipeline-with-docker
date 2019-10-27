@@ -9,6 +9,7 @@ sleep 20
 echo -e "\nJenkins password:"
 docker container exec pipelineonubuntu_jekns-ans-master_1 cat /var/jenkins_home/secrets/initialAdminPassword
 echo -e "\n fetching nexus password........"
+sleep 10
 echo -e "\nNexus Password:"
 docker container exec pipelineonubuntu_nexus_1 cat /nexus-data/admin.password
 echo -e "\n\n"

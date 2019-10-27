@@ -4,26 +4,26 @@ This repo is a easy way to set up an entire devops CI/CD pipeline with nothing o
 
 > The setup is preconfigured to work with npm as the build and package tool. The dockerfiles and ansible playbook are attached for anyone who wants to poke around
 
-> All the services are running on tocker containers including ansible hosts
+> All the services are running on docker containers including ansible hosts
 
 ### Components used
 - **Git :**  Source Code Management
 - **Jenkins :**  Continuous Integration **port: 8080**
 - **SonarQube :**  Static analysis **port: 9000**
 - **Sonatype nexus :**  Artifactory **port: 8081**
-- **Ansible cluster :**  Deployment
+- **Ansible cluster :**  Deployment _(1 master, 3 hosts)_
 - **Docker :**  Container runtime
 - **npm :**   To build the source code
 - **serve :**  To serve the final application **ports: 4002, 4004, 4006** one per ansible host
 
-> you should atleast have 8gb of ram since sonatype nexus requires atleast 4gb spare ram
+> you should atleast have 20gb free disk space and 8gb of ram since sonatype nexus requires atleast 4gb spare ram
 ***
 
-Our setup involves three ansible host containers, , single containers runing sonarqube and nexuz and another running both ansible and jenkins
+Our setup involves three ansible host containers, individual containers running sonarqube and nexus and another running both ansible and jenkins
 
 ## This is how you implement:
 
-- Clone the repo, navigate to the directry, and run the setup.sh cript file. Your setup is done, You are just configuring your project away from an up and running pipeline. 
+- Clone the repo, navigate to the directry, and run the setup.sh script file. Your setup is done, You are just configuring your project away from an up and running pipeline. 
 
 
 ``` 
