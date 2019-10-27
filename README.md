@@ -23,7 +23,7 @@ Our setup involves three ansible host containers, individual containers running 
 
 ## This is how you implement:
 
-- Clone the repo, navigate to the directry, and run the setup.sh script file. Your setup is done, You are just configuring your project away from an up and running pipeline. 
+- Clone the repo, navigate to the directory `pipeline on ubuntu`, and run the setup.sh script file. Your setup is done, You are just configuring your project away from an up and running pipeline. 
 
 
 ``` 
